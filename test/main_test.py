@@ -2,13 +2,12 @@ import time
 import json
 import cv2
 import requests
-import paho.mqtt.client as mqtt  
-# from scripts.capture import Camera
+# import paho.mqtt.client as mqtt  
+from scripts.capture import Camera
 from scripts.inference import run_yolo
 from scripts.match import mask_to_polygons, process_map, match_detections_to_rois
-from ultralytics import YOLO
 
-CONFIG_PATH = "/Users/uma/Downloads/smartpark/node/data/config.json"
+CONFIG_PATH = "/home/smartpark/node/data/config.json"
 
 def load_config():
     try:
@@ -20,7 +19,7 @@ def load_config():
         raise ValueError("Invalid JSON in config file")
     
 def load_spaces():
-    spaces_path = f"/Users/uma/Downloads/smartpark/node/data/ml01_master.json"
+    spaces_path = f"/home/smartpark/node/data/ml01_master.json"
     try:
         with open(spaces_path, "r") as f:
             data = json.load(f)
@@ -42,18 +41,22 @@ def main():
 
     print(f"Starting SmartPark Node for Lot '{lot_id}' (Camera ID: {camera_id})")
 
-    model = YOLO("/Users/uma/Downloads/yolo/weights/best.pt")
-    img_path = "/Users/uma/Downloads/pklot_seg/test/images/image_081_jpg.rf.6605d44afdd29b94a2cd1814b7857321.jpg"
-    results = model.predict(img_path, conf=0.5)
-    masks = results[0].masks
-    classes = results[0].boxes.cls
-    orig_shape = results[0].masks.orig_shape
+    camera = Camera(resolution) 
+    time.sleep(2)
 
+ 
+    frame = camera.capture_frame()
+
+    masks, classes, orig_shape = run_yolo(frame, lot_id, conf=conf_threshold)
     pred_polygons = mask_to_polygons(masks, classes, orig_shape)
     master_spaces = process_map(spaces)
     status_data = match_detections_to_rois(master_spaces, pred_polygons, iou_threshold) 
 
     print(f"[INFO] Status: {status_data}")
+
+            # send_to_backend(camera_id, lot_id, status_data, config)
+
+    camera.stop()
 
 if __name__ == "__main__":
     main()

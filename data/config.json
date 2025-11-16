@@ -1,0 +1,13 @@
+{
+  "lot_id": "MiniLot",
+  "camera_id": "MiniLot_cam1",
+  "server_url": "https://smartpark-server.com",
+  "use_mqtt": true,
+  "mqtt_broker": "100.95.3.23",
+  "mqtt_port": 1883,
+  "topic": "smartpark/MiniLot/MiniLot_cam1",
+  "capture_resolution": [1296, 972],
+  "confidence_threshold": 0.35,
+  "iou_threshold": 0.5,
+  "interval_seconds": 15
+}

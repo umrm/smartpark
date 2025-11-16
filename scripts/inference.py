@@ -7,7 +7,7 @@ import os
 MODEL_DIR = os.path.join(os.path.dirname(__file__), "models")
 
 def run_yolo(frame, lot_name: str, conf: float = 0.5):
-    model_path = os.path.join(MODEL_DIR, f"{lot_name}.pt")
+    model_path = os.path.join(MODEL_DIR, f"{lot_name}_model.pt")
     model = YOLO(model_path)
 
     results = model.predict(frame, conf=conf)

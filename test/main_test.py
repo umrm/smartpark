@@ -19,7 +19,7 @@ def load_config():
         raise ValueError("Invalid JSON in config file")
     
 def load_spaces():
-    spaces_path = f"/home/smartpark/node/data/ml01_master.json"
+    spaces_path = f"/home/smartpark/node/data/parking_clean.json"
     try:
         with open(spaces_path, "r") as f:
             data = json.load(f)
